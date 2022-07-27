@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" /> 
+    <title>Gamedev Canvas Workshop</title>
+    <style>
+      * { padding: 0; margin: 0; }
+      canvas { background: #eee; display: block; margin: 0 auto; }
+    </style>
+</head>
+<body>
+
+<canvas id="myCanvas" width="500" height="500"></canvas>
+
+<script>
+
+  // ABOVE :
+  //     define charset (utf-8)
+  //     define canvas (which we will render the game in)
+  //     some basic CSS
+
+
+  // BELOW : 
+  //     JavaScript code       //////////////////////////
+
+  // CANVAS /////////////////////////////////////////////
+
+  var canvas = document.getElementById("myCanvas"); 
+  // create a reference to the canvas
+
+  var ctx = canvas.getContext("2d");
+  // 2D rendering context we can use to paint on the canvas
+
+  var paddleHeight = 50;
+  var paddleWidth = 150;
+  // define paddle dimensions
+
+  var paddleX = 150; //(canvas.width-paddleWidth) / 2;
+  // set paddle start location
+
+  var ballSize = 50;
+  // define ball size
+
+  var rightPressed = false;
+  var leftPressed = false;
+  // variables to store right/left button presses
+
+  //////////////////////////////////////////////////////
+
+  function getRndInteger(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) ) + min;
+  }
+
+  // set x and y values for square location
+
+  let x = getRndInteger(0,9)*50 
+  let y = 0 
+  // ball start location, x and y vals
+
+  let x_end = getRndInteger(0,9)*50 
+  // pick ahead of time ball's ending x value
+
+  let color = "black"
+  // set ball color
+
+  // K CHECK : CHECK THAT RANDOM NUMBER GENERATOR YIELDS VALUES SPANNING FULL X RANGE
+
+  // BELOW --> COMMENTED OUT
+  // let x = canvas.width/2;
+  // let y = canvas.height-30;
+  // let dx = randomNumber(-2,2)*-50
+  
+  // each time, the ball drops by one ball
+
+  function ballStart() {
+  let randomIndex = Math.floor(Math.random() * startLoc.length);
+  document.getElementById("randomSong").setAttribute("value", songs[randomIndex]);
+  }
+
+  // Function to generate random number 
+  function randomNumber(min, max) { 
+      return Math.random() * (max - min) + min;
+  } 
+    
+    
+  // Function call
+  // document.write( randomNumber(1, 5) ); 
+
+
+  // draw function that will repaint the square over and over again
+  function drawBall() {
+
+  ctx.beginPath(); // begin instructions
+
+  ctx.rect(x, y, ballSize, ballSize); 
+  // first two values  --> coordinates of top left corner of square
+  // second two values --> width and height of the square
+  ctx.fillStyle = color
+ 
+  // designates the square fill color
+  ctx.fill();
+  // fills the square with designated color
+
+  ctx.closePath();  // end instructions
+
+  }
+
+  function drawPaddle() {
+    ctx.beginPath();
+    ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
+    ctx.fillStyle = "#0095DD";
+    ctx.fill();
+    ctx.closePath();
+}
+
+
+  // function drawPaddle(){
+  //   // code to draw paddle here
+  // }
+
+  // function movePaddle{
+  //   // code to move paddle here
+  // }
+
+
+  // ////////////////////////////////////////
+  // // function borrowed from other repo
+  // function gameOver() {
+  // ctx.fillStyle = 'black';
+  // ctx.fillRect(1, 3, 8, 1.2);
+  // ctx.font = '1px Arial';
+  // ctx.fillStyle = 'red';
+  // ctx.fillText('GAME OVER', 1.8, 4);
+  // }
+  // ////////////////////////////////////////
+
+
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
+// set up listeners to listen for button presses
+
+function keyDownHandler(e) {
+  if(e.key == "Right" || e.key == "ArrowRight") {
+      rightPressed = true;
+  }
+  else if(e.key == "Left" || e.key == "ArrowLeft") {
+      leftPressed = true;
+  }
+}
+
+function keyUpHandler(e) {
+    if(e.key == "Right" || e.key == "ArrowRight") {
+        rightPressed = false;
+    }
+    else if(e.key == "Left" || e.key == "ArrowLeft") {
+        leftPressed = false;
+    }
+}
+
+function draw() {
+
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+drawBall();
+drawPaddle();
+
+  // if(x + dx > canvas.width-ballSize || x + dx < ballRadius) {
+  //     dx = -dx;
+  // }
+  // if(y + dy > canvas.height-ballSize || y + dy < ballRadius) {
+  //     dy = -dy;
+  // }
+
+//let dx = randomNumber(-2,2)*-50
+
+// if x does not equal x_end, update x so it is one ballSize closer to x_end
+// else leave x value the same
+
+if (x!=x_end && x<x_end){
+  dx=50
+  // let test_color="blue"
+} else if (x!=x_end && x>x_end){
+  dx=-50
+  // let test_color="red"
+} else{ 
+  dx=0
+  // let test_color="yellow"
+}
+
+x += dx; // update the x position of square
+y += ballSize; // update the y position of square
+               // each time the ball drops by one ballSize
+
+if(rightPressed) {
+  paddleX += 50;
+    if (paddleX + paddleWidth > canvas.width){
+        paddleX = canvas.width - paddleWidth;
+    }
+} else if(leftPressed) {
+  paddleX -= 50;
+  if (paddleX < 0){
+      paddleX = 0;
+    }
+  }
+}
+
+// key handler functions take an event (e) as a parameter
+// the key holds the information about which key was pressed
+
+  setInterval(draw, 65);
+  // the draw function will be called every 10 milliseconds forever
+
+  // test out drawing a red square /////////////////////
+
+  // ctx.beginPath(); // begin instructions
+
+  // ctx.rect(20, 40, 50, 50); 
+  // // first two values  --> coordinates of top left corner of square
+  // // second two values --> width and height of the square
+  // ctx.fillStyle = "#FF0000";
+  // // designates the square fill color
+  // ctx.fill();
+  // // fills the square with designated color
+
+  // ctx.closePath();  // end instructions
+
+
+  // test out drawing a green circle square /////////////////////
+  // ctx.beginPath();
+  // ctx.arc(240, 160, 20, 0, Math.PI*2, false);
+  // ctx.fillStyle = "green";
+  // ctx.fill();
+  // ctx.closePath();
+
+  
+
+</script>
+
+</body>
+</html>
